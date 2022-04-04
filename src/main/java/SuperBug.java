@@ -8,7 +8,7 @@ public class SuperBug extends GameApplication {
         gameSettings.setWidth(800);
         gameSettings.setTitle("Super Bug");
         gameSettings.setVersion("1.0");
-        gameSettings.setAppIcon("icon.png");
+        gameSettings.setAppIcon("bug09.png");
     }
 
     @Override
