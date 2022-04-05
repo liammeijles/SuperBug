@@ -1,3 +1,4 @@
+import com.almasb.fxgl.entity.Entity;
 import Entitys.PlayerComponent;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
@@ -11,6 +12,11 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 public class SuperBug extends GameApplication {
 
     Entity player;
+    Entity enemy;
+
+
+
+
 
     @Override
     protected void initSettings(GameSettings gameSettings) {
@@ -34,7 +40,8 @@ public class SuperBug extends GameApplication {
         getSettings().setGlobalSoundVolume(0.1);
         getGameWorld().addEntityFactory(new GameEntityFactory());
 
-        player = spawn("player", 0, 0);
+        player = spawn("player", -400, -400);
+        enemy = spawn("enemy", 0, 0);
 
 
     }

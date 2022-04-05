@@ -8,6 +8,7 @@ import com.almasb.fxgl.ui.ProgressBar;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.paint.Color;
 
+
 import static com.almasb.fxgl.dsl.FXGL.*;
 
 public class Enemy {
@@ -24,10 +25,11 @@ public class Enemy {
 
         return entityBuilder(data)
                 .type(EntityType.ENEMY)
-                .viewWithBBox("codeicons")
+                .viewWithBBox("enemy01.png")
                 .view(hpView)
                 .with(hp)
-                .with(new RandomMoveComponent(new Rectangle2D(0, 0, getAppWidth(), getAppHeight()), 100))
+                .scale(0.1,0.1)
+                .with(new RandomMoveComponent(new Rectangle2D(0, 0, getAppWidth(), getAppHeight()), 50))
                 .collidable()
                 .build();
     }
