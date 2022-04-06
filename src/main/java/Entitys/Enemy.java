@@ -1,36 +1,41 @@
 package Entitys;
 
-import com.almasb.fxgl.dsl.components.HealthIntComponent;
-import com.almasb.fxgl.dsl.components.RandomMoveComponent;
+import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.dsl.components.*;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.SpawnData;
+import com.almasb.fxgl.entity.components.TimeComponent;
 import com.almasb.fxgl.ui.ProgressBar;
+import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
 
 import static com.almasb.fxgl.dsl.FXGL.*;
 
 public class Enemy {
 
-    public Entity spawnEnemy(SpawnData data) {
-        var hp = new HealthIntComponent(2);
+    HealthIntComponent health;
 
-        var hpView = new ProgressBar(false);
-        hpView.setFill(Color.LIGHTGREEN);
-        hpView.setMaxValue(2);
-        hpView.setWidth(85);
-        hpView.setTranslateY(90);
-        hpView.currentValueProperty().bind(hp.valueProperty());
+    public Entity spawnEnemy(SpawnData data) {
+        health = new HealthIntComponent(20);
+
+        double randX = (Math.random() * 3) - 1;
+        double randY = (Math.random() * 3) - 1;
+        double randSpeed = (Math.random() * 60) + 60;
 
         return entityBuilder(data)
-                .type(EntityType.ENEMY)
+                .type(EntityTypes.ENEMY)
                 .viewWithBBox("enemy01.png")
-                .view(hpView)
-                .with(hp)
-                .scale(0.1,0.1)
-                .with(new RandomMoveComponent(new Rectangle2D(0, 0, getAppWidth(), getAppHeight()), 50))
+                .with(health)
+                .at(FXGL.getAppWidth() / 2f,FXGL.getAppHeight() / 2f)
+                .with(new ProjectileComponent(new Point2D(-randX,-randY), randSpeed))
                 .collidable()
                 .build();
+    }
+
+    public void dmgEnemy(int dmg) {
+        this.health.damage(dmg);
     }
 }

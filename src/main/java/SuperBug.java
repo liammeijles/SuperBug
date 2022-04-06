@@ -1,9 +1,17 @@
+
+import Entitys.EntityTypes;
+import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.dsl.components.HealthIntComponent;
+import com.almasb.fxgl.dsl.handlers.CollectibleHandler;
 import com.almasb.fxgl.entity.Entity;
 import Entitys.PlayerComponent;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.entity.Entity;
+import com.almasb.fxgl.physics.CollisionHandler;
+import com.almasb.fxgl.physics.HitBox;
 import javafx.scene.input.KeyCode;
+import javafx.util.Duration;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
 
@@ -12,11 +20,6 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 public class SuperBug extends GameApplication {
 
     Entity player;
-    Entity enemy;
-
-
-
-
 
     @Override
     protected void initSettings(GameSettings gameSettings) {
@@ -29,21 +32,63 @@ public class SuperBug extends GameApplication {
 
     @Override
     protected void initGame() {
-//        FXGL: https://youtube.com/playlist?list=PLOpV0IvTJof9mFTWf6OxMvW6zt9pLZSOV
-//        GIT:  https://youtube.com/playlist?list=PLOpV0IvTJof9dyBqpTO2ugGcvt2Gy8292
+        // FXGL: https://youtube.com/playlist?list=PLOpV0IvTJof9mFTWf6OxMvW6zt9pLZSOV
+        // GIT:  https://youtube.com/playlist?list=PLOpV0IvTJof9dyBqpTO2ugGcvt2Gy8292
 
         // CODE: https://github.com/AlmasB/FXGLGames/tree/master/Asteroids/src/main/java/com/almasb/fxglgames
         // video: https://www.youtube.com/watch?v=48rVgdq0mFA
-
-
 
         getSettings().setGlobalSoundVolume(0.1);
         getGameWorld().addEntityFactory(new GameEntityFactory());
 
         player = spawn("player", -400, -400);
-        enemy = spawn("enemy", 0, 0);
 
 
+        FXGL.getGameTimer().runAtInterval(() -> {
+            spawn("enemy", 0,0);
+        }, Duration.millis(2000));
+
+        FXGL.getGameTimer().runAtInterval(() -> {
+            spawn("powerup", 0,0);
+        }, Duration.millis(15000));
+    }
+
+    @Override
+    protected void initPhysics() {
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityTypes.PLAYER, EntityTypes.ENEMY) {
+            @Override
+            protected void onHitBoxTrigger(Entity a, Entity b, HitBox boxA, HitBox boxB) {
+                HealthIntComponent healt = a.getComponent(HealthIntComponent.class);
+                System.out.println("Health of Player: " + healt.getValue());
+                if (healt.getValue() > 0) {
+                    healt.damage(1);
+                } else {
+                    a.setVisible(false);
+                }
+                b.removeFromWorld();
+            }
+        });
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityTypes.ENEMY, EntityTypes.BULLET) {
+            @Override
+            protected void onCollision(Entity a, Entity b) {
+                HealthIntComponent healt = a.getComponent(HealthIntComponent.class);
+
+                if (healt.getValue() > 1) {
+                    healt.damage(1);
+                } else {
+                    a.removeFromWorld();
+                }
+                b.removeFromWorld();
+            }
+        });
+
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityTypes.PLAYER, EntityTypes.POWER_UP) {
+            @Override
+            protected void onHitBoxTrigger(Entity a, Entity b, HitBox boxA, HitBox boxB) {
+                player.getComponent(PlayerComponent.class).giveRandomPowerUp();
+                b.removeFromWorld();
+            }
+        });
     }
 
     @Override
@@ -52,7 +97,7 @@ public class SuperBug extends GameApplication {
         onKey(KeyCode.A, () -> player.getComponent(PlayerComponent.class).rotateLeft());
         onKey(KeyCode.D, () -> player.getComponent(PlayerComponent.class).rotateRight());
         onKey(KeyCode.W, () -> player.getComponent(PlayerComponent.class).move());
-        onKeyDown(KeyCode.SPACE, () -> player.getComponent(PlayerComponent.class).shoot());
+        onKey(KeyCode.SPACE, () -> player.getComponent(PlayerComponent.class).shoot());
 
     }
 
