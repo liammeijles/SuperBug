@@ -15,8 +15,6 @@ import javafx.util.Duration;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
 
-
-
 public class SuperBug extends GameApplication {
 
     Entity player;
@@ -42,8 +40,7 @@ public class SuperBug extends GameApplication {
         getGameWorld().addEntityFactory(new GameEntityFactory());
 
         player = spawn("player", -400, -400);
-
-
+        playSound(0);
         FXGL.getGameTimer().runAtInterval(() -> {
             spawn("enemy", 0,0);
         }, Duration.millis(2000));
@@ -51,6 +48,7 @@ public class SuperBug extends GameApplication {
         FXGL.getGameTimer().runAtInterval(() -> {
             spawn("powerup", 0,0);
         }, Duration.millis(15000));
+
     }
 
     @Override
@@ -64,6 +62,7 @@ public class SuperBug extends GameApplication {
                     healt.damage(1);
                 } else {
                     a.setVisible(false);
+                    playSE(4);
                     // TODO: player dead
                 }
                 b.removeFromWorld();
@@ -99,7 +98,28 @@ public class SuperBug extends GameApplication {
         onKey(KeyCode.D, () -> player.getComponent(PlayerComponent.class).rotateRight());
         onKey(KeyCode.W, () -> player.getComponent(PlayerComponent.class).move());
         onKey(KeyCode.SPACE, () -> player.getComponent(PlayerComponent.class).shoot());
+    }
 
+    //Sound setup
+    //Initialize sound
+    Sound sound = new Sound();
+
+    //Play sound on loop
+    public void playSound(int i) {
+        sound.setFile(i);
+        sound.play();
+        sound.loop();
+    }
+
+    //Stop sound
+    public void stopSound() {
+        sound.stop();
+    }
+
+    //Play 1 time sound effect
+    public void playSE(int i) {
+        sound.setFile(i);
+        sound.play();
     }
 
     public static void main(String[] args) {
