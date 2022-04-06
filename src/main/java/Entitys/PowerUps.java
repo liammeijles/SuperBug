@@ -4,7 +4,7 @@ public enum PowerUps {
     // normal bug type = bug01.png
     FAST_SHOOTING("bug07.png"),
     MEGA_HEALTH("bug08.png"),
-    QUEAT_ATTACK("bug06.png");
+    QUAD_ATTACK("bug06.png");
 
     private final String bugType;
 

@@ -64,6 +64,7 @@ public class SuperBug extends GameApplication {
                     healt.damage(1);
                 } else {
                     a.setVisible(false);
+                    // TODO: player dead
                 }
                 b.removeFromWorld();
             }

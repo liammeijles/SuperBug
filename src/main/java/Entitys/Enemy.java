@@ -19,7 +19,7 @@ public class Enemy {
     HealthIntComponent health;
 
     public Entity spawnEnemy(SpawnData data) {
-        health = new HealthIntComponent(20);
+        health = new HealthIntComponent(5);
 
         double randX = (Math.random() * 3) - 1;
         double randY = (Math.random() * 3) - 1;

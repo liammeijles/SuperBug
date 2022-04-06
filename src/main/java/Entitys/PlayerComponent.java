@@ -85,7 +85,7 @@ public class PlayerComponent extends Component {
                     alInPowerUp = false;
                 }, Duration.seconds(10));
                 break;
-            case QUEAT_ATTACK:
+            case QUAD_ATTACK:
 
                 int timeToShoot = 60;
                 int timeToSleepMilis = 100;
