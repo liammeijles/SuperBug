@@ -41,12 +41,12 @@ public class SuperBug extends GameApplication {
         getSettings().setGlobalSoundVolume(0.1);
         getGameWorld().addEntityFactory(new GameEntityFactory());
 
-        player = spawn("player", -400, -400);
+        player = spawn("player", 0, -400);
 
 
         FXGL.getGameTimer().runAtInterval(() -> {
             spawn("enemy", 0,0);
-        }, Duration.millis(2000));
+        }, Duration.millis(200));
 
         FXGL.getGameTimer().runAtInterval(() -> {
             spawn("powerup", 0,0);

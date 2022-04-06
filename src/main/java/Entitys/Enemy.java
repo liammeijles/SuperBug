@@ -23,13 +23,13 @@ public class Enemy {
 
         double randX = (Math.random() * 3) - 1;
         double randY = (Math.random() * 3) - 1;
-        double randSpeed = (Math.random() * 60) + 60;
+        double randSpeed = (Math.random() * 600) + 60;
 
         return entityBuilder(data)
                 .type(EntityTypes.ENEMY)
                 .viewWithBBox("enemy01.png")
                 .with(health)
-                .at(FXGL.getAppWidth() / 2f,FXGL.getAppHeight() / 2f)
+                .at(400,0)
                 .with(new ProjectileComponent(new Point2D(-randX,-randY), randSpeed))
                 .collidable()
                 .build();
