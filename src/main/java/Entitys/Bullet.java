@@ -21,9 +21,9 @@ public class Bullet {
         var effectComponent = new EffectComponent();
 
         var e = entityBuilder(data)
-                .type(EntityType.BULLET)
+                .type(EntityTypes.BULLET)
                 .viewWithBBox(new Circle(8, Color.RED))
-                .with(new ProjectileComponent(dir, 500))
+                .with(new ProjectileComponent(dir, 270))
                 .with(new OffscreenCleanComponent())
                 .with(new TimeComponent())
                 .with(effectComponent)
