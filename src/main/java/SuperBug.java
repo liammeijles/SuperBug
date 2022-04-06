@@ -85,6 +85,12 @@ public class SuperBug extends GameApplication {
         FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityTypes.PLAYER, EntityTypes.POWER_UP) {
             @Override
             protected void onHitBoxTrigger(Entity a, Entity b, HitBox boxA, HitBox boxB) {
+                stopSound();
+                playSE(1);
+                FXGL.getGameTimer().runOnceAfter(() -> {
+                    stopSound();
+                    playSound(0);
+                }, Duration.seconds(10));
                 player.getComponent(PlayerComponent.class).giveRandomPowerUp();
                 b.removeFromWorld();
             }
