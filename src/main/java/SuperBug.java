@@ -19,6 +19,8 @@ public class SuperBug extends GameApplication {
 
     Entity player;
 
+    SpawnEnemyWave sew = new SpawnEnemyWave();
+
     @Override
     protected void initSettings(GameSettings gameSettings) {
         gameSettings.setHeight(800);
@@ -39,6 +41,15 @@ public class SuperBug extends GameApplication {
         getSettings().setGlobalSoundVolume(0.1);
         getGameWorld().addEntityFactory(new GameEntityFactory());
 
+<<<<<<< HEAD
+        player = spawn("player", 0, 0);
+
+        sew.waveManager();
+
+        FXGL.getGameTimer().runAtInterval(() -> {
+            spawn("powerup", 0,0);
+        }, Duration.millis(30000));
+=======
         player = spawn("player", -400, -400);
         playSound(0);
         FXGL.getGameTimer().runAtInterval(() -> {
@@ -48,6 +59,7 @@ public class SuperBug extends GameApplication {
         FXGL.getGameTimer().runAtInterval(() -> {
             spawn("powerup", 0,0);
         }, Duration.millis(15000));
+>>>>>>> main
 
     }
 
@@ -59,7 +71,7 @@ public class SuperBug extends GameApplication {
                 HealthIntComponent healt = a.getComponent(HealthIntComponent.class);
                 System.out.println("Health of Player: " + healt.getValue());
                 if (healt.getValue() > 0) {
-                    healt.damage(1);
+                    healt.damage(0);
                 } else {
                     a.setVisible(false);
                     playSE(4);
@@ -131,4 +143,5 @@ public class SuperBug extends GameApplication {
     public static void main(String[] args) {
         launch(args);
     }
+
 }
