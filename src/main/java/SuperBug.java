@@ -79,10 +79,10 @@ public class SuperBug extends GameApplication {
                     healt.damage(1);
                 } else {
                     a.setVisible(false);
+                    stopSound();
                     playSE(4);
 
                     FXGL.getGameTimer().runOnceAfter(() -> {
-                        sound.stop();
                         FXGL.getGameController().gotoMainMenu();
                     }, Duration.seconds(2));
 
@@ -160,12 +160,9 @@ public class SuperBug extends GameApplication {
         onKey(KeyCode.W, () -> player.getComponent(PlayerComponent.class).move());
         onKey(KeyCode.SPACE, () -> player.getComponent(PlayerComponent.class).shoot());
         onKey(KeyCode.M, () -> {
-            sound.stop();
+            stopSound();
             FXGL.getGameController().gotoMainMenu();
         });
-
-
-
     }
 
     //Sound setup
@@ -194,5 +191,4 @@ public class SuperBug extends GameApplication {
     public static void main(String[] args) {
         launch(args);
     }
-
 }
