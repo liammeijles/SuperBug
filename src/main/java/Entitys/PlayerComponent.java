@@ -45,6 +45,12 @@ public class PlayerComponent extends Component {
 
     public void move() {
         Vec2 dir = Vec2.fromAngle(entity.getRotation() - 90).mulLocal(4);
+
+        //System.out.println(entity.getX() + " " + entity.getY());
+//        if (dir.y > getAppHeight() || dir.x > getAppWidth() || dir.y < 1 || dir.x < 1) {
+//            System.out.println("player of screen");
+//        }
+
         entity.translate(dir);
     }
 
