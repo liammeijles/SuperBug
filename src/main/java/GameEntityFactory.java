@@ -1,7 +1,4 @@
-import Entitys.Bullet;
-import Entitys.Enemy;
-import Entitys.PowerUp;
-import Entitys.Player;
+import Entitys.*;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.EntityFactory;
 import com.almasb.fxgl.entity.SpawnData;
@@ -13,6 +10,7 @@ public class GameEntityFactory implements EntityFactory {
     Player player = new Player();
     Bullet bullet = new Bullet();
     PowerUp powerUp = new PowerUp();
+    Rocket rocket = new Rocket();
 
     @Spawns("powerup")
     public Entity newPowerUp(SpawnData data) {
@@ -23,6 +21,9 @@ public class GameEntityFactory implements EntityFactory {
     public Entity newPlayer(SpawnData data) {
         return player.spawnPlayer(data);
     }
+
+    @Spawns("minion")
+    public Entity newMinion(SpawnData data) {return rocket.spawnRocket(data);}
 
     @Spawns("enemy")
     public Entity newEnemy(SpawnData data) {

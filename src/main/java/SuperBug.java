@@ -45,12 +45,12 @@ public class SuperBug extends GameApplication {
         // CODE: https://github.com/AlmasB/FXGLGames/tree/master/Asteroids/src/main/java/com/almasb/fxglgames
         // video: https://www.youtube.com/watch?v=48rVgdq0mFA
 
-        getSettings().setGlobalSoundVolume(0.1);
+        getSettings().setGlobalSoundVolume(0);
         getGameWorld().addEntityFactory(new GameEntityFactory());
 
-        player = spawn("player", -400, -400);
+        player = spawn("player");
 
-        sew.waveManager();
+        //sew.waveManager();
 
 
         FXGL.getGameTimer().runAtInterval(() -> spawn("enemy", 0,0), Duration.millis(2000));
@@ -58,9 +58,6 @@ public class SuperBug extends GameApplication {
         FXGL.getGameTimer().runAtInterval(() -> spawn("powerup", 0,0), Duration.millis(15000));
 
         playSound(0);
-        FXGL.getGameTimer().runAtInterval(() -> {
-            spawn("enemy", 0,0);
-        }, Duration.millis(2000));
 
         FXGL.getGameTimer().runAtInterval(() -> {
             spawn("powerup", 0,0);
@@ -110,15 +107,23 @@ public class SuperBug extends GameApplication {
             }
         });
 
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityTypes.ENEMY, EntityTypes.MINION) {
+            @Override
+            protected void onCollision(Entity a, Entity b) {
+                a.removeFromWorld();
+                b.removeFromWorld();
+            }
+        });
+
         FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityTypes.PLAYER, EntityTypes.POWER_UP) {
             @Override
             protected void onHitBoxTrigger(Entity a, Entity b, HitBox boxA, HitBox boxB) {
-                stopSound();
-                playSE(1);
-                FXGL.getGameTimer().runOnceAfter(() -> {
-                    stopSound();
-                    playSound(0);
-                }, Duration.seconds(10));
+                //stopSound();
+                //playSE(1);
+                //FXGL.getGameTimer().runOnceAfter(() -> {
+                //    stopSound();
+                //    playSound(0);
+                //}, Duration.seconds(10));
                 player.getComponent(PlayerComponent.class).giveRandomPowerUp();
                 b.removeFromWorld();
             }

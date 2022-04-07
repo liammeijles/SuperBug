@@ -12,7 +12,6 @@ public class Player {
 
         return entityBuilder(data)
                 .type(EntityTypes.PLAYER)
-                .scale(0.1,0.1)
                 .viewWithBBox("bug01.png")
                 .with(new HealthIntComponent(4))
                 .with(new PlayerComponent())
