@@ -29,6 +29,7 @@ public class SuperBug extends GameApplication {
         gameSettings.setVersion("1.0");
         gameSettings.setAppIcon("bug09.png");
         gameSettings.setMainMenuEnabled(true);
+        gameSettings.setSceneFactory(new UISceneFactory());
     }
 
     @Override
@@ -45,13 +46,9 @@ public class SuperBug extends GameApplication {
         player = spawn("player", -400, -400);
 
 
-        FXGL.getGameTimer().runAtInterval(() -> {
-            spawn("enemy", 0,0);
-        }, Duration.millis(2000));
+        FXGL.getGameTimer().runAtInterval(() -> spawn("enemy", 0,0), Duration.millis(2000));
 
-        FXGL.getGameTimer().runAtInterval(() -> {
-            spawn("powerup", 0,0);
-        }, Duration.millis(15000));
+        FXGL.getGameTimer().runAtInterval(() -> spawn("powerup", 0,0), Duration.millis(15000));
     }
 
     @Override
@@ -102,6 +99,7 @@ public class SuperBug extends GameApplication {
         onKey(KeyCode.SPACE, () -> player.getComponent(PlayerComponent.class).shoot());
 
     }
+
 
     public static void main(String[] args) {
         launch(args);
