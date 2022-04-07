@@ -57,7 +57,7 @@ public class SuperBug extends GameApplication {
 
         FXGL.getGameTimer().runAtInterval(() -> spawn("powerup", 0,0), Duration.millis(15000));
 
-        playSound(0);
+        //playSound(0);
 
         FXGL.getGameTimer().runAtInterval(() -> {
             spawn("powerup", 0,0);
@@ -78,8 +78,8 @@ public class SuperBug extends GameApplication {
                     healt.damage(1);
                 } else {
                     a.setVisible(false);
-                    stopSound();
-                    playSE(4);
+                    //stopSound();
+                    //playSE(4);
 
                     FXGL.getGameTimer().runOnceAfter(() -> {
                         FXGL.getGameController().gotoMainMenu();
@@ -87,7 +87,6 @@ public class SuperBug extends GameApplication {
 
                     int savedScore = FXGL.geti("High score");
                     saveHighScore(savedScore);
-                    // TODO: player dead
                 }
                 b.removeFromWorld();
             }
