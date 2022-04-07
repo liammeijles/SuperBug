@@ -114,6 +114,14 @@ public class SuperBug extends GameApplication {
         playerHealth.setTranslateY(25);
         playerHealth.textProperty().bind(FXGL.getWorldProperties().intProperty("Player health").asString());
         FXGL.getGameScene().addUINode(playerHealth);
+
+//        int playerHealth = 5;
+//
+//        var heart1 = FXGL.getAssetLoader().loadTexture("heart.png");
+//        heart1.setTranslateX(775);
+//        heart1.setTranslateY(25);
+//        heart1.textProperty().bind(FXGL.getWorldProperties().intProperty("Heart 1").asString());
+//        FXGL.getGameScene().addUINode(heart1);
     }
 
     @Override
