@@ -116,7 +116,6 @@ public class SuperBug extends GameApplication {
         FXGL.getGameScene().addUINode(playerHealth);
 
 //        int playerHealth = 5;
-//
 //        var heart1 = FXGL.getAssetLoader().loadTexture("heart.png");
 //        heart1.setTranslateX(775);
 //        heart1.setTranslateY(25);
