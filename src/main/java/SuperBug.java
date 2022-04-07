@@ -16,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 import java.awt.*;
+import java.io.*;
 import java.util.Map;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
@@ -61,16 +62,19 @@ public class SuperBug extends GameApplication {
     @Override
     protected void initPhysics() {
         FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityTypes.PLAYER, EntityTypes.ENEMY) {
+
             @Override
             protected void onHitBoxTrigger(Entity a, Entity b, HitBox boxA, HitBox boxB) {
                 HealthIntComponent healt = a.getComponent(HealthIntComponent.class);
                 System.out.println("Health of Player: " + healt.getValue());
                 FXGL.inc("Player health", -1);
                 if (healt.getValue() > 0) {
-                    healt.damage(0);
+                    healt.damage(1);
                 } else {
                     a.setVisible(false);
                     playSE(4);
+                    int savedScore = FXGL.geti("High score");
+                    saveHighScore(savedScore);
                     // TODO: player dead
                 }
                 b.removeFromWorld();
@@ -108,26 +112,30 @@ public class SuperBug extends GameApplication {
 
     @Override
     protected void initUI() {
+        Label scoreText = new Label("Score:");
+        scoreText.setStyle("-fx-text-fill: black");
+        scoreText.setTranslateX(20);
+        scoreText.setTranslateY(20);
+        FXGL.getGameScene().addUINode(scoreText);
+
         Label score = new Label("High score");
         score.setStyle("-fx-text-fill: black");
-        score.setTranslateX(25);
-        score.setTranslateY(25);
+        score.setTranslateX(60);
+        score.setTranslateY(20);
         score.textProperty().bind(FXGL.getWorldProperties().intProperty("High score").asString());
         FXGL.getGameScene().addUINode(score);
 
         Label playerHealth = new Label("Player health");
         playerHealth.setStyle("-fx-text-fill: black");
-        playerHealth.setTranslateX(775);
+        playerHealth.setTranslateX(755);
         playerHealth.setTranslateY(25);
         playerHealth.textProperty().bind(FXGL.getWorldProperties().intProperty("Player health").asString());
         FXGL.getGameScene().addUINode(playerHealth);
 
-//        int playerHealth = 5;
-//        var heart1 = FXGL.getAssetLoader().loadTexture("heart.png");
-//        heart1.setTranslateX(775);
-//        heart1.setTranslateY(25);
-//        heart1.textProperty().bind(FXGL.getWorldProperties().intProperty("Heart 1").asString());
-//        FXGL.getGameScene().addUINode(heart1);
+        var heart = FXGL.getAssetLoader().loadTexture("heart.png");
+        heart.setTranslateX(770);
+        heart.setTranslateY(25);
+        FXGL.getGameScene().addUINode(heart);
     }
 
     @Override
@@ -143,6 +151,22 @@ public class SuperBug extends GameApplication {
         onKey(KeyCode.D, () -> player.getComponent(PlayerComponent.class).rotateRight());
         onKey(KeyCode.W, () -> player.getComponent(PlayerComponent.class).move());
         onKey(KeyCode.SPACE, () -> player.getComponent(PlayerComponent.class).shoot());
+    }
+
+    public void saveHighScore(int writeScore) {
+        try {
+            FileWriter myWriter = new FileWriter("src/main/java/scores.txt", true);
+            BufferedWriter myBuffer = new BufferedWriter(myWriter);
+            String wScore = Integer.toString(writeScore);
+            System.out.println(wScore);
+            myBuffer.write(wScore);
+            myBuffer.newLine();
+            myBuffer.close();
+            System.out.println("New high score added");
+        } catch (IOException e) {
+            System.out.println("An error occurred");
+            e.printStackTrace();
+        }
     }
 
     //Sound setup
