@@ -25,6 +25,8 @@ public class PlayerComponent extends Component {
     private double cooldown;
     private double speedup = 0.4;
 
+    Sound sound = new Sound();
+
     private final String PATH = "/assets/textures/";
 
     @Override
@@ -50,6 +52,7 @@ public class PlayerComponent extends Component {
         Timer timer = FXGL.getGameTimer();
 
         if (timer.getNow() > cooldown + speedup) {
+            sound.playSE(3);
             cooldown = FXGL.getGameTimer().getNow();
 
             Point2D center = entity.getCenter().subtract(37/2.0, 13/2.0);

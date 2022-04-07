@@ -1,3 +1,5 @@
+package Entitys;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -20,6 +22,23 @@ public class Sound {
         soundURL[4] = getClass().getResource("/assets/sounds/death.wav");
         //Enemy sound
         soundURL[5] = getClass().getResource("/assets/sounds/enemy.wav");
+    }
+
+    public void playSound(int i) {
+        setFile(i);
+        play();
+        loop();
+    }
+
+    //Stop sound
+    public void stopSound() {
+        stop();
+    }
+
+    //Play 1 time sound effect
+    public void playSE(int i) {
+        setFile(i);
+        play();
     }
     
     public void setFile(int i) {
