@@ -14,6 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 import java.util.List;
+import java.util.Timer;
 
 import static com.almasb.fxgl.dsl.FXGL.entityBuilder;
 import static com.almasb.fxgl.dsl.FXGL.random;
@@ -22,14 +23,20 @@ import static com.almasb.fxgl.dsl.FXGL.random;
 public class Rocket extends Component {
 
     private int randomEnemy = 9999;
+    private double timer;
 
     @Override
     public void onAdded() {
-
+        timer = FXGL.getGameTimer().getNow();
     }
 
     @Override
     public void onUpdate(double tpf) {
+        double FixedTimer = FXGL.getGameTimer().getNow() - timer;
+        if (FixedTimer > 15) {
+            entity.removeFromWorld();
+        }
+
         List<Entity> ets = FXGL.getGameWorld().getEntitiesByType(EntityTypes.ENEMY);
 
         if (ets.size() > 0) {

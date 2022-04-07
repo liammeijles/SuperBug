@@ -23,7 +23,7 @@ public class SpawnEnemyWave {
             if (list.size() < 1 && !waveSpawned) {
                 waveSpawned = true;
                 FXGL.getGameTimer().runOnceAfter(() -> {
-                    if (levelCount < 5) {
+                    if (levelCount < 3) {
                         spawnSimpleWave(1, 1000);}
                     else {
                         spawnSimpleWave(100, 10000);}
