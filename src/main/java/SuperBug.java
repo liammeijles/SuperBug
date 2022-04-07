@@ -57,7 +57,7 @@ public class SuperBug extends GameApplication {
 
         FXGL.getGameTimer().runAtInterval(() -> spawn("powerup", 0,0), Duration.millis(15000));
 
-        playSound(0);
+        //playSound(0);
 
         FXGL.getGameTimer().runAtInterval(() -> {
             spawn("powerup", 0,0);
@@ -78,8 +78,8 @@ public class SuperBug extends GameApplication {
                     healt.damage(1);
                 } else {
                     a.setVisible(false);
-                    stopSound();
-                    playSE(4);
+                    //stopSound();
+                    //playSE(4);
 
                     FXGL.getGameTimer().runOnceAfter(() -> {
                         FXGL.getGameController().gotoMainMenu();
@@ -175,7 +175,7 @@ public class SuperBug extends GameApplication {
         onKey(KeyCode.W, () -> player.getComponent(PlayerComponent.class).move());
         onKey(KeyCode.SPACE, () -> player.getComponent(PlayerComponent.class).shoot());
         onKey(KeyCode.M, () -> {
-            stopSound();
+            //stopSound();
             FXGL.getGameController().gotoMainMenu();
         });
     }
