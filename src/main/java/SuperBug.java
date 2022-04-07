@@ -33,6 +33,8 @@ public class SuperBug extends GameApplication {
         gameSettings.setTitle("Super Bug");
         gameSettings.setVersion("1.0");
         gameSettings.setAppIcon("bug09.png");
+        gameSettings.setMainMenuEnabled(true);
+        gameSettings.setSceneFactory(new UISceneFactory());
     }
 
     @Override
@@ -49,6 +51,11 @@ public class SuperBug extends GameApplication {
         player = spawn("player", -400, -400);
 
         sew.waveManager();
+
+
+        FXGL.getGameTimer().runAtInterval(() -> spawn("enemy", 0,0), Duration.millis(2000));
+
+        FXGL.getGameTimer().runAtInterval(() -> spawn("powerup", 0,0), Duration.millis(15000));
 
         playSound(0);
         FXGL.getGameTimer().runAtInterval(() -> {
@@ -169,6 +176,7 @@ public class SuperBug extends GameApplication {
         sound.setFile(i);
         sound.play();
     }
+
 
     public static void main(String[] args) {
         launch(args);
