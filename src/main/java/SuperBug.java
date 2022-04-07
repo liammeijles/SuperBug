@@ -2,20 +2,17 @@
 import Entitys.EntityTypes;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.dsl.components.HealthIntComponent;
-import com.almasb.fxgl.dsl.handlers.CollectibleHandler;
 import com.almasb.fxgl.entity.Entity;
 import Entitys.PlayerComponent;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
-import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.physics.HitBox;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
-import java.awt.*;
 import java.util.Map;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
@@ -39,6 +36,8 @@ public class SuperBug extends GameApplication {
 
     @Override
     protected void initGame() {
+
+
         // FXGL: https://youtube.com/playlist?list=PLOpV0IvTJof9mFTWf6OxMvW6zt9pLZSOV
         // GIT:  https://youtube.com/playlist?list=PLOpV0IvTJof9dyBqpTO2ugGcvt2Gy8292
 
@@ -77,11 +76,16 @@ public class SuperBug extends GameApplication {
                 System.out.println("Health of Player: " + healt.getValue());
                 FXGL.inc("Player health", -1);
                 if (healt.getValue() > 0) {
-                    healt.damage(0);
+                    healt.damage(1);
                 } else {
                     a.setVisible(false);
                     playSE(4);
-                    // TODO: player dead
+
+                    FXGL.getGameTimer().runOnceAfter(() -> {
+                        sound.stop();
+                        FXGL.getGameController().gotoMainMenu();
+                    }, Duration.seconds(2));
+
                 }
                 b.removeFromWorld();
             }
@@ -118,6 +122,8 @@ public class SuperBug extends GameApplication {
 
     @Override
     protected void initUI() {
+        FXGL.getGameScene().setBackgroundRepeat("Level1.png");
+
         Label score = new Label("High score");
         score.setStyle("-fx-text-fill: black");
         score.setTranslateX(25);
@@ -153,6 +159,13 @@ public class SuperBug extends GameApplication {
         onKey(KeyCode.D, () -> player.getComponent(PlayerComponent.class).rotateRight());
         onKey(KeyCode.W, () -> player.getComponent(PlayerComponent.class).move());
         onKey(KeyCode.SPACE, () -> player.getComponent(PlayerComponent.class).shoot());
+        onKey(KeyCode.M, () -> {
+            sound.stop();
+            FXGL.getGameController().gotoMainMenu();
+        });
+
+
+
     }
 
     //Sound setup
