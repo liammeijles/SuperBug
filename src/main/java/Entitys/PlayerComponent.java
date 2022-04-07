@@ -24,6 +24,8 @@ public class PlayerComponent extends Component {
     private boolean alInPowerUp = false;
     private double cooldown;
     private double speedup = 0.4;
+    private boolean enableShotGun = false;
+    private int extraRandomBullet = 0;
 
     private final String PATH = "/assets/textures/";
 
@@ -43,6 +45,12 @@ public class PlayerComponent extends Component {
 
     public void move() {
         Vec2 dir = Vec2.fromAngle(entity.getRotation() - 90).mulLocal(4);
+
+        //System.out.println(entity.getX() + " " + entity.getY());
+//        if (dir.y > getAppHeight() || dir.x > getAppWidth() || dir.y < 1 || dir.x < 1) {
+//            System.out.println("player of screen");
+//        }
+
         entity.translate(dir);
     }
 
@@ -51,14 +59,31 @@ public class PlayerComponent extends Component {
 
         if (timer.getNow() > cooldown + speedup) {
             cooldown = FXGL.getGameTimer().getNow();
+            spawnBullet(Vec2.fromAngle(entity.getRotation() - 90).toPoint2D());
 
-            Point2D center = entity.getCenter().subtract(37/2.0, 13/2.0);
-            Vec2 dir = Vec2.fromAngle(entity.getRotation() - 90);
-            spawn("bullet", new SpawnData(center.getX(), center.getY()).put("dir", dir.toPoint2D()));
+            for (int i = 0; i < extraRandomBullet; i++) {
+                double randomBullet = (Math.random() * 30) + 80;
+                spawnBullet(Vec2.fromAngle(entity.getRotation() - randomBullet).toPoint2D());
+            }
+
+            if (enableShotGun) {
+
+                spawnBullet(Vec2.fromAngle(entity.getRotation() - 80).toPoint2D());
+                spawnBullet(Vec2.fromAngle(entity.getRotation() - 70).toPoint2D());
+                spawnBullet(Vec2.fromAngle(entity.getRotation() - 100).toPoint2D());
+                spawnBullet(Vec2.fromAngle(entity.getRotation() - 110).toPoint2D());
+            }
         }
     }
 
+
+    private void spawnBullet(Point2D rotation) {
+        Point2D center = entity.getCenter().subtract(0f, 13/2.0);
+        spawn("bullet", new SpawnData(center.getX(), center.getY()).put("dir", rotation));
+    }
+
     public void giveRandomPowerUp() {
+        extraRandomBullet++;
         if (alInPowerUp) return;
         alInPowerUp = true;
 
@@ -92,16 +117,17 @@ public class PlayerComponent extends Component {
 
                 for (int i = 0; i < timeToShoot; i++) {
                     FXGL.getGameTimer().runOnceAfter(() -> {
-                        Point2D center = entity.getCenter().subtract(37/2.0, 13/2.0);
                         Vec2 dir = Vec2.fromAngle(entity.getRotation() - 90);
 
                         double posX = 1 * dir.x;
                         double posY = 1 * dir.y;
 
-                        spawn("bullet", new SpawnData(center.getX(), center.getY()).put("dir", new Point2D(posY, -posX)));
-                        spawn("bullet", new SpawnData(center.getX(), center.getY()).put("dir", new Point2D(-posX, -posY)));
-                        spawn("bullet", new SpawnData(center.getX(), center.getY()).put("dir", new Point2D(-posY, posX)));
-                        spawn("bullet", new SpawnData(center.getX(), center.getY()).put("dir", new Point2D(posX, posY)));
+                        spawnBullet(new Point2D(posY, -posX));
+                        spawnBullet(new Point2D(-posX, -posY));
+                        spawnBullet(new Point2D(-posY, posX));
+                        spawnBullet(new Point2D(posX, posY));
+
+
                     }, Duration.millis(timeToSleepMilis * i));
                 }
 
@@ -113,6 +139,16 @@ public class PlayerComponent extends Component {
 
                 break;
 
+            case SHOTGUN_HEALTH:
+                enableShotGun = true;
+
+                FXGL.getGameTimer().runOnceAfter(() -> {
+                    updateType("bug01.png");
+                    enableShotGun = false;
+                    alInPowerUp = false;
+                }, Duration.seconds(10));
+
+                break;
         }
     }
 
