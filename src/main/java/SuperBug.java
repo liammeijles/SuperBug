@@ -33,6 +33,8 @@ public class SuperBug extends GameApplication {
 
     private static String playerName;
 
+    private boolean stopSound = false;
+
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
     }
@@ -63,7 +65,8 @@ public class SuperBug extends GameApplication {
 
         player = spawn("player");
 
-        //sew.waveManager();
+        sew.waveManager();
+        sound.playSound(0);
 
 
         FXGL.getGameTimer().runAtInterval(() -> {spawn("powerup", 0,0);}, Duration.millis(15000));
@@ -86,7 +89,10 @@ public class SuperBug extends GameApplication {
                     healt.damage(1);
                 } else {
                     a.setVisible(false);
-                    sound.playSE(4);
+
+                    if (!stopSound) {
+                        sound.playSE(4);
+                    }
 
                     FXGL.getGameTimer().runOnceAfter(() -> {
                         int savedScore = FXGL.geti("High score");
@@ -216,9 +222,23 @@ public class SuperBug extends GameApplication {
         onKey(KeyCode.W, () -> player.getComponent(PlayerComponent.class).move());
         onKey(KeyCode.SPACE, () -> player.getComponent(PlayerComponent.class).shoot());
 
-        onKey(KeyCode.M, () -> {
+        onKey(KeyCode.P, () -> {
+            if (!stopSound) {
+                sound.stop();
+                stopSound = true;
+                sound.stopAllSound(false);
+            } else {
+                sound.playSE(0);
+                stopSound = false;
+                sound.stopAllSound(true);
 
-            FXGL.getGameController().pauseEngine();
+            }
+        });
+
+        onKey(KeyCode.M, () -> {
+            sound.stop();
+            FXGL.getGameController().gotoMainMenu();
+
         });
     }
 
@@ -237,6 +257,8 @@ public class SuperBug extends GameApplication {
             e.printStackTrace();
         }
     }
+
+
 
     public static void main(String[] args) {
         launch(args);

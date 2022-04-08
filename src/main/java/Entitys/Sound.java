@@ -14,6 +14,8 @@ public class Sound {
     FloatControl fc;
     Boolean mute = false;
 
+    static boolean allSounds = true;
+
     public Sound() {
         //Main sound file / Background music
         soundURL[0] = getClass().getResource("/assets/sounds/background-music.wav");
@@ -42,11 +44,15 @@ public class Sound {
 
     //Play 1 time sound effect
     public void playSE(int i) {
-        setFile(i);
-        play();
+        if (allSounds) {
+            setFile(i);
+            play();
+        }
+
     }
 
     public void setFile(int i) {
+
         //Set file constructor with indexing
         try {
             AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL[i]);
@@ -99,5 +105,9 @@ public class Sound {
             fc.setValue(currentVolume);
             mute = false;
         }
+    }
+
+    public void stopAllSound(boolean stop) {
+        this.allSounds = stop;
     }
 }

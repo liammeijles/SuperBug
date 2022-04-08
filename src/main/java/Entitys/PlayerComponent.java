@@ -68,7 +68,7 @@ public class PlayerComponent extends Component {
         Timer timer = FXGL.getGameTimer();
 
         if (timer.getNow() > cooldown + speedup) {
-
+            sound.playSE(3);
             cooldown = FXGL.getGameTimer().getNow();
             spawnBullet(Vec2.fromAngle(entity.getRotation() - 90).toPoint2D());
 
