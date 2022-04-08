@@ -8,12 +8,13 @@ import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.physics.HitBox;
+import com.almasb.fxgl.texture.Texture;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.util.Duration;
 import java.awt.*;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Map;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
@@ -21,6 +22,9 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 public class SuperBug extends GameApplication {
 
     Entity player;
+
+    ArrayList<Texture> hearts = new ArrayList<>();
+    private int preHealth;
 
     SpawnEnemyWave sew = new SpawnEnemyWave();
 
@@ -57,7 +61,6 @@ public class SuperBug extends GameApplication {
 
         FXGL.getGameTimer().runAtInterval(() -> spawn("powerup", 0,0), Duration.millis(15000));
 
-        //playSound(0);
 
         FXGL.getGameTimer().runAtInterval(() -> {
             spawn("powerup", 0,0);
@@ -78,8 +81,6 @@ public class SuperBug extends GameApplication {
                     healt.damage(1);
                 } else {
                     a.setVisible(false);
-                    //stopSound();
-                    //playSE(4);
 
                     FXGL.getGameTimer().runOnceAfter(() -> {
                         FXGL.getGameController().gotoMainMenu();
@@ -87,7 +88,6 @@ public class SuperBug extends GameApplication {
 
                     int savedScore = FXGL.geti("High score");
                     saveHighScore(savedScore);
-                    // TODO: player dead
                 }
                 b.removeFromWorld();
             }
@@ -110,6 +110,7 @@ public class SuperBug extends GameApplication {
         FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityTypes.ENEMY, EntityTypes.MINION) {
             @Override
             protected void onCollision(Entity a, Entity b) {
+                FXGL.inc("High score", +100);
                 a.removeFromWorld();
                 b.removeFromWorld();
             }
@@ -118,13 +119,8 @@ public class SuperBug extends GameApplication {
         FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityTypes.PLAYER, EntityTypes.POWER_UP) {
             @Override
             protected void onHitBoxTrigger(Entity a, Entity b, HitBox boxA, HitBox boxB) {
-                //stopSound();
-                //playSE(1);
-                //FXGL.getGameTimer().runOnceAfter(() -> {
-                //    stopSound();
-                //    playSound(0);
-                //}, Duration.seconds(10));
                 player.getComponent(PlayerComponent.class).giveRandomPowerUp();
+                FXGL.inc("High score", +50);
                 b.removeFromWorld();
             }
         });
@@ -135,36 +131,67 @@ public class SuperBug extends GameApplication {
 
         FXGL.getGameScene().setBackgroundRepeat("Level1.png");
 
-        Label scoreText = new Label("Score:");
-        scoreText.setStyle("-fx-text-fill: black");
-        scoreText.setTranslateX(20);
-        scoreText.setTranslateY(20);
-        FXGL.getGameScene().addUINode(scoreText);
 
         Label score = new Label("High score");
         score.setStyle("-fx-text-fill: black");
-        score.setTranslateX(60);
-        score.setTranslateY(20);
+        score.setStyle("-fx-font-size:30");
+        score.setTranslateX(20);
+        score.setTranslateY(10);
         score.textProperty().bind(FXGL.getWorldProperties().intProperty("High score").asString());
         FXGL.getGameScene().addUINode(score);
 
-        Label playerHealth = new Label("Player health");
-        playerHealth.setStyle("-fx-text-fill: black");
-        playerHealth.setTranslateX(755);
-        playerHealth.setTranslateY(25);
-        playerHealth.textProperty().bind(FXGL.getWorldProperties().intProperty("Player health").asString());
-        FXGL.getGameScene().addUINode(playerHealth);
+        Label level = new Label("Level");
+        level.setStyle("-fx-text-fill:red");
+        level.setStyle("-fx-font-size:30");
+        level.setTranslateX(20);
+        level.setTranslateY(40);
+        FXGL.getGameScene().addUINode(level);
 
-        var heart = FXGL.getAssetLoader().loadTexture("heart.png");
-        heart.setTranslateX(770);
-        heart.setTranslateY(25);
-        FXGL.getGameScene().addUINode(heart);
+        Label currentLEvel = new Label("");
+        currentLEvel.setStyle("-fx-text-fill:red");
+        currentLEvel.setStyle("-fx-font-size:30");
+        currentLEvel.setTranslateX(100);
+        currentLEvel.setTranslateY(40);
+        currentLEvel.textProperty().bind(FXGL.getWorldProperties().intProperty("CurrentLevel").asString());
+        FXGL.getGameScene().addUINode(currentLEvel);
+
+        placeHearts();
+    }
+
+    private void placeHearts() {
+        FXGL.getGameTimer().runAtInterval(() -> {
+            int health = player.getComponent(HealthIntComponent.class).getValue();
+
+            if (health != preHealth) {
+                preHealth = health;
+
+                if (hearts.size() > 0) {
+                    for (int i = 0; i < hearts.size(); i++) {
+                        FXGL.getGameScene().removeUINode(hearts.get(i));
+                    }
+                }
+
+                for (int i = 0; i < health; i++) {
+                    Texture heart = FXGL.getAssetLoader().loadTexture("heart.png");
+                    heart.setTranslateX((i * - 40) + 730);
+                    heart.setTranslateY(10);
+                    heart.setScaleX(.5);
+                    heart.setScaleY(.5);
+                    FXGL.getGameScene().addUINode(heart);
+                    hearts.add(heart);
+                }
+            }
+
+        }, Duration.millis(50));
+
+
     }
 
     @Override
     protected void initGameVars(Map<String, Object> vars) {
         vars.put("High score", 0);
         vars.put("Player health", 5);
+        vars.put("CurrentLevel", 1);
     }
 
     @Override
@@ -175,8 +202,8 @@ public class SuperBug extends GameApplication {
         onKey(KeyCode.W, () -> player.getComponent(PlayerComponent.class).move());
         onKey(KeyCode.SPACE, () -> player.getComponent(PlayerComponent.class).shoot());
         onKey(KeyCode.M, () -> {
-            //stopSound();
-            FXGL.getGameController().gotoMainMenu();
+
+            FXGL.getGameController().pauseEngine();
         });
     }
 
@@ -194,28 +221,6 @@ public class SuperBug extends GameApplication {
             System.out.println("An error occurred");
             e.printStackTrace();
         }
-    }
-
-    //Sound setup
-    //Initialize sound
-    Sound sound = new Sound();
-
-    //Play sound on loop
-    public void playSound(int i) {
-        sound.setFile(i);
-        sound.play();
-        sound.loop();
-    }
-
-    //Stop sound
-    public void stopSound() {
-        sound.stop();
-    }
-
-    //Play 1 time sound effect
-    public void playSE(int i) {
-        sound.setFile(i);
-        sound.play();
     }
 
 
