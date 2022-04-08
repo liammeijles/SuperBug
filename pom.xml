@@ -19,7 +19,15 @@
             <artifactId>fxgl</artifactId>
             <version>11.14</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx</artifactId>
+            <version>11</version>
+            <type>pom</type>
+        </dependency>
+
     </dependencies>
+
 
     <build>
         <plugins>
