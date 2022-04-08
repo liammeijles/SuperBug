@@ -5,6 +5,7 @@ import com.almasb.fxgl.core.math.Vec2;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.dsl.components.HealthIntComponent;
 import com.almasb.fxgl.dsl.components.ProjectileComponent;
+import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.entity.components.ViewComponent;
@@ -17,6 +18,9 @@ import javafx.geometry.Point2D;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
+import java.util.List;
+import java.util.Random;
+
 import static com.almasb.fxgl.dsl.FXGL.*;
 
 public class PlayerComponent extends Component {
@@ -24,6 +28,8 @@ public class PlayerComponent extends Component {
     private boolean alInPowerUp = false;
     private double cooldown;
     private double speedup = 0.4;
+    private boolean enableShotGun = false;
+    private int extraRandomBullet = 0;
 
     Sound sound = new Sound();
 
@@ -47,26 +53,53 @@ public class PlayerComponent extends Component {
     public void move() {
         Vec2 dir = Vec2.fromAngle(entity.getRotation() - 90).mulLocal(4);
         entity.translate(dir);
+
+        double playerCenterX = entity.getCenter().getX();
+        double playerCenterY = entity.getCenter().getY();
+
+        if (playerCenterY < -40) entity.setPosition(new Point2D(entity.getX(), getAppHeight()));
+        if (playerCenterX < - 40) entity.setPosition(new Point2D(getAppWidth(), entity.getY()));
+        if (playerCenterX > getAppWidth() + 40) entity.setPosition(new Point2D(-entity.getWidth(), entity.getY()));
+        if (playerCenterY > getAppHeight() + 40) entity.setPosition(new Point2D(entity.getX(), -entity.getHeight()));
     }
 
     public void shoot() {
+
         Timer timer = FXGL.getGameTimer();
 
         if (timer.getNow() > cooldown + speedup) {
-            sound.playSE(3);
-            cooldown = FXGL.getGameTimer().getNow();
 
-            Point2D center = entity.getCenter().subtract(37/2.0, 13/2.0);
-            Vec2 dir = Vec2.fromAngle(entity.getRotation() - 90);
-            spawn("bullet", new SpawnData(center.getX(), center.getY()).put("dir", dir.toPoint2D()));
+            cooldown = FXGL.getGameTimer().getNow();
+            spawnBullet(Vec2.fromAngle(entity.getRotation() - 90).toPoint2D());
+
+            for (int i = 0; i < extraRandomBullet; i++) {
+                double randomBullet = (Math.random() * 30) + 80;
+                spawnBullet(Vec2.fromAngle(entity.getRotation() - randomBullet).toPoint2D());
+            }
+
+            if (enableShotGun) {
+
+                spawnBullet(Vec2.fromAngle(entity.getRotation() - 80).toPoint2D());
+                spawnBullet(Vec2.fromAngle(entity.getRotation() - 70).toPoint2D());
+                spawnBullet(Vec2.fromAngle(entity.getRotation() - 100).toPoint2D());
+                spawnBullet(Vec2.fromAngle(entity.getRotation() - 110).toPoint2D());
+            }
         }
     }
 
+
+    private void spawnBullet(Point2D rotation) {
+        Point2D center = entity.getCenter().subtract(0f, 13/2.0);
+        spawn("bullet", new SpawnData(center.getX(), center.getY()).put("dir", rotation));
+    }
+
     public void giveRandomPowerUp() {
+        extraRandomBullet++;
         if (alInPowerUp) return;
         alInPowerUp = true;
 
         PowerUps randPower = PowerUps.getRandom();
+        //PowerUps randPower = PowerUps.MEGA_HEALTH;
         updateType(randPower.getBugType());
 
         switch (randPower) {
@@ -81,10 +114,10 @@ public class PlayerComponent extends Component {
                 break;
             case MEGA_HEALTH:
                 HealthIntComponent health = entity.getComponent(HealthIntComponent.class);
-                health.setValue(10000);
+                health.setValue(30);
                 FXGL.getGameTimer().runOnceAfter(() -> {
-                    health.setValue(4);
 
+                    health.setValue(4);
                     updateType("bug01.png");
                     alInPowerUp = false;
                 }, Duration.seconds(10));
@@ -96,18 +129,17 @@ public class PlayerComponent extends Component {
 
                 for (int i = 0; i < timeToShoot; i++) {
                     FXGL.getGameTimer().runOnceAfter(() -> {
-                        Point2D center = entity.getCenter().subtract(37/2.0, 13/2.0);
                         Vec2 dir = Vec2.fromAngle(entity.getRotation() - 90);
 
                         double posX = 1 * dir.x;
                         double posY = 1 * dir.y;
 
-                        spawn("bullet", new SpawnData(center.getX(), center.getY()).put("dir", new Point2D(posY, -posX)));
-                        spawn("bullet", new SpawnData(center.getX(), center.getY()).put("dir", new Point2D(-posX, -posY)));
-                        spawn("bullet", new SpawnData(center.getX(), center.getY()).put("dir", new Point2D(-posY, posX)));
-                        spawn("bullet", new SpawnData(center.getX(), center.getY()).put("dir", new Point2D(posX, posY)));
+                        spawnBullet(new Point2D(posY, -posX));
+                        spawnBullet(new Point2D(-posX, -posY));
+                        spawnBullet(new Point2D(-posY, posX));
+                        spawnBullet(new Point2D(posX, posY));
 
-                        sound.playSE(3);
+
                     }, Duration.millis(timeToSleepMilis * i));
                 }
 
@@ -119,6 +151,34 @@ public class PlayerComponent extends Component {
 
                 break;
 
+            case SHOTGUN_HEALTH:
+                enableShotGun = true;
+
+                FXGL.getGameTimer().runOnceAfter(() -> {
+                    updateType("bug01.png");
+                    enableShotGun = false;
+                    alInPowerUp = false;
+                }, Duration.seconds(10));
+
+                break;
+
+            case HOMING_MISSILE:
+                int timeBetween = 100;
+
+                for (int i = 0; i < extraRandomBullet * 4; i++) {
+                    FXGL.getGameTimer().runOnceAfter(() -> {
+                        spawn("minion", entity.getCenter().subtract(0f, 13/2.0));
+                    }, Duration.millis(timeBetween * i));
+
+                }
+
+                FXGL.getGameTimer().runOnceAfter(() -> {
+                    updateType("bug01.png");
+                    alInPowerUp = false;
+                }, Duration.millis(extraRandomBullet * 5 * timeBetween));
+
+
+                break;
         }
     }
 
