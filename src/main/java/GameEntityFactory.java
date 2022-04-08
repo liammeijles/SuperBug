@@ -9,8 +9,8 @@ public class GameEntityFactory implements EntityFactory {
     Enemy enemy = new Enemy();
     Player player = new Player();
     Bullet bullet = new Bullet();
-    PowerUp powerUp = new PowerUp();
     Rocket rocket = new Rocket();
+    PowerUp powerUp = new PowerUp();
 
     @Spawns("powerup")
     public Entity newPowerUp(SpawnData data) {
