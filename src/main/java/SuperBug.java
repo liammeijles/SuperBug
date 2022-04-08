@@ -49,7 +49,7 @@ public class SuperBug extends GameApplication {
 
         FXGL.getGameTimer().runAtInterval(() -> {
             spawn("powerup", 0,0);
-        }, Duration.millis(30000));
+        }, Duration.millis(15000));
 
     }
 
@@ -61,7 +61,7 @@ public class SuperBug extends GameApplication {
                 HealthIntComponent healt = a.getComponent(HealthIntComponent.class);
                 System.out.println("Health of Player: " + healt.getValue());
                 if (healt.getValue() > 0) {
-                    healt.damage(0);
+                    healt.damage(1);
                 } else {
                     a.setVisible(false);
                     // TODO: player dead

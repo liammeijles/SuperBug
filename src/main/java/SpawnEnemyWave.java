@@ -5,7 +5,6 @@ import com.almasb.fxgl.entity.Entity;
 import javafx.util.Duration;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
 
@@ -13,7 +12,6 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 public class SpawnEnemyWave {
 
     private boolean waveSpawned = false;
-    Boolean typeCheck = false;
     private int levelCount = 0;
     private int enemyLimit = 0;
     private double waveDelay = 1.0;
