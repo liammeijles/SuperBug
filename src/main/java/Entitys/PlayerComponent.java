@@ -162,7 +162,7 @@ public class PlayerComponent extends Component {
             case HOMING_MISSILE:
                 int timeBetween = 100;
 
-                for (int i = 0; i < extraRandomBullet * 50; i++) {
+                for (int i = 0; i < extraRandomBullet * 5; i++) {
                     FXGL.getGameTimer().runOnceAfter(() -> {
                         spawn("minion", entity.getCenter().subtract(0f, 13/2.0));
                     }, Duration.millis(timeBetween * i));

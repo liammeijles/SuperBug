@@ -50,12 +50,9 @@ public class SuperBug extends GameApplication {
 
         player = spawn("player");
 
-        //sew.waveManager();
+        sew.waveManager();
 
 
-        FXGL.getGameTimer().runAtInterval(() -> spawn("enemy", 0,0), Duration.millis(2000));
-
-        FXGL.getGameTimer().runAtInterval(() -> spawn("powerup", 0,0), Duration.millis(15000));
 
         //playSound(0);
 
@@ -98,7 +95,7 @@ public class SuperBug extends GameApplication {
                 HealthIntComponent healt = a.getComponent(HealthIntComponent.class);
 
                 if (healt.getValue() > 1) {
-                    healt.damage(1);
+                    healt.damage(100);
                 } else {
                     FXGL.inc("High score", +100);
                     a.removeFromWorld();
@@ -199,7 +196,6 @@ public class SuperBug extends GameApplication {
     //Sound setup
     //Initialize sound
     Sound sound = new Sound();
-
     //Play sound on loop
     public void playSound(int i) {
         sound.setFile(i);

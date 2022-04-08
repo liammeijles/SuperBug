@@ -1,3 +1,4 @@
+import Entitys.Enemy;
 import Entitys.EnemyTypes;
 import Entitys.EntityTypes;
 import com.almasb.fxgl.dsl.FXGL;
@@ -12,10 +13,9 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 public class SpawnEnemyWave {
 
     private boolean waveSpawned = false;
-    private int levelCount = 0;
+    public int levelCount = 0;
     private int enemyLimit = 0;
     private double waveDelay = 1.0;
-
 
     public void waveManager() {
         FXGL.getGameTimer().runAtInterval(() -> {
@@ -25,6 +25,8 @@ public class SpawnEnemyWave {
 
             if (list.size() <= enemyLimit  && !waveSpawned) {
                 waveSpawned = true;
+                System.out.println(levelCount);
+
                 if(levelCount < 5) {
                     spawnSimpleWave(1, EnemyTypes.C);
                     enemyLimit = 1;
@@ -84,6 +86,9 @@ public class SpawnEnemyWave {
                     spawnDoubleWave(1, EnemyTypes.Ruby, 10, EnemyTypes.C);
                     enemyLimit = 0;
                     waveDelay = 1000;
+                    FXGL.getGameTimer().runOnceAfter(() -> {
+                        levelCount = 0;
+                    }, Duration.millis(5000));
                 }
                 levelCount++;
             }
@@ -95,7 +100,8 @@ public class SpawnEnemyWave {
         FXGL.getGameTimer().runOnceAfter(() -> {
             EnemyTypes.getEnemytypes(type);
             for (int i = 0; i < amount; i++) {
-                spawn("enemy", 0, 0);
+                Entity enemy = spawn("enemy", 0, 0);
+
                 waveSpawned = false;
 
             }
