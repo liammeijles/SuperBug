@@ -1,5 +1,6 @@
 
 import Entitys.EntityTypes;
+import Entitys.Sound;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.dsl.components.HealthIntComponent;
 import com.almasb.fxgl.entity.Entity;
@@ -21,6 +22,8 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 
 public class SuperBug extends GameApplication {
 
+    Sound sound = new Sound();
+
     Entity player;
 
     ArrayList<Texture> hearts = new ArrayList<>();
@@ -30,6 +33,8 @@ public class SuperBug extends GameApplication {
     SpawnEnemyWave sew = new SpawnEnemyWave();
 
     private static String playerName;
+
+    private boolean stopSound = false;
 
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
@@ -61,7 +66,8 @@ public class SuperBug extends GameApplication {
 
         player = spawn("player");
 
-        //sew.waveManager();
+        sew.waveManager();
+        sound.playSound(0);
 
 
         FXGL.getGameTimer().runAtInterval(() -> {spawn("powerup", 0,0);}, Duration.millis(15000));
@@ -84,6 +90,10 @@ public class SuperBug extends GameApplication {
                     healt.damage(1);
                 } else {
                     a.setVisible(false);
+
+                    if (!stopSound) {
+                        sound.playSE(4);
+                    }
 
                     FXGL.getGameTimer().runOnceAfter(() -> {
                         int savedScore = FXGL.geti("High score");
@@ -124,6 +134,13 @@ public class SuperBug extends GameApplication {
         FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityTypes.PLAYER, EntityTypes.POWER_UP) {
             @Override
             protected void onHitBoxTrigger(Entity a, Entity b, HitBox boxA, HitBox boxB) {
+                sound.stopSound();
+                sound.playSE(1);
+                FXGL.getGameTimer().runOnceAfter(() -> {
+                    sound.stopSound();
+                    sound.playSound(0);
+                }, Duration.seconds(10));
+
                 player.getComponent(PlayerComponent.class).giveRandomPowerUp();
                 FXGL.inc("High score", +50);
                 b.removeFromWorld();
@@ -212,14 +229,28 @@ public class SuperBug extends GameApplication {
 
     @Override
     protected void initInput() {
-
         onKey(KeyCode.A, () -> player.getComponent(PlayerComponent.class).rotateLeft());
         onKey(KeyCode.D, () -> player.getComponent(PlayerComponent.class).rotateRight());
         onKey(KeyCode.W, () -> player.getComponent(PlayerComponent.class).move());
         onKey(KeyCode.SPACE, () -> player.getComponent(PlayerComponent.class).shoot());
-        onKey(KeyCode.M, () -> {
 
-            FXGL.getGameController().pauseEngine();
+        onKey(KeyCode.P, () -> {
+            if (!stopSound) {
+                sound.stop();
+                stopSound = true;
+                sound.stopAllSound(false);
+            } else {
+                sound.playSE(0);
+                stopSound = false;
+                sound.stopAllSound(true);
+
+            }
+        });
+
+        onKey(KeyCode.M, () -> {
+            sound.stop();
+            FXGL.getGameController().gotoMainMenu();
+
         });
     }
 
@@ -238,6 +269,7 @@ public class SuperBug extends GameApplication {
             e.printStackTrace();
         }
     }
+
 
 
     public static void main(String[] args) {
