@@ -27,6 +27,7 @@ public class PlayerComponent extends Component {
 
     Sound sound = new Sound();
 
+
     private final String PATH = "/assets/textures/";
 
     @Override
@@ -105,6 +106,8 @@ public class PlayerComponent extends Component {
                         spawn("bullet", new SpawnData(center.getX(), center.getY()).put("dir", new Point2D(-posX, -posY)));
                         spawn("bullet", new SpawnData(center.getX(), center.getY()).put("dir", new Point2D(-posY, posX)));
                         spawn("bullet", new SpawnData(center.getX(), center.getY()).put("dir", new Point2D(posX, posY)));
+
+                        sound.playSE(3);
                     }, Duration.millis(timeToSleepMilis * i));
                 }
 
