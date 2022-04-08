@@ -41,6 +41,8 @@ public class SuperBug extends GameApplication {
 
     @Override
     protected void initGame() {
+
+
         // FXGL: https://youtube.com/playlist?list=PLOpV0IvTJof9mFTWf6OxMvW6zt9pLZSOV
         // GIT:  https://youtube.com/playlist?list=PLOpV0IvTJof9dyBqpTO2ugGcvt2Gy8292
 
@@ -53,6 +55,7 @@ public class SuperBug extends GameApplication {
         player = spawn("player");
 
         //sew.waveManager();
+
 
         FXGL.getGameTimer().runAtInterval(() -> {spawn("powerup", 0,0);}, Duration.millis(15000));
 
