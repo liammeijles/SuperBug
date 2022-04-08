@@ -96,7 +96,7 @@ public class PlayerComponent extends Component {
         alInPowerUp = true;
 
         PowerUps randPower = PowerUps.getRandom();
-        //PowerUps randPower = PowerUps.HOMING_MISSILE;
+        //PowerUps randPower = PowerUps.MEGA_HEALTH;
         updateType(randPower.getBugType());
 
         switch (randPower) {
@@ -111,10 +111,10 @@ public class PlayerComponent extends Component {
                 break;
             case MEGA_HEALTH:
                 HealthIntComponent health = entity.getComponent(HealthIntComponent.class);
-                health.setValue(10000);
+                health.setValue(30);
                 FXGL.getGameTimer().runOnceAfter(() -> {
-                    health.setValue(4);
 
+                    health.setValue(4);
                     updateType("bug01.png");
                     alInPowerUp = false;
                 }, Duration.seconds(10));
@@ -162,7 +162,7 @@ public class PlayerComponent extends Component {
             case HOMING_MISSILE:
                 int timeBetween = 100;
 
-                for (int i = 0; i < extraRandomBullet * 5; i++) {
+                for (int i = 0; i < extraRandomBullet * 4; i++) {
                     FXGL.getGameTimer().runOnceAfter(() -> {
                         spawn("minion", entity.getCenter().subtract(0f, 13/2.0));
                     }, Duration.millis(timeBetween * i));

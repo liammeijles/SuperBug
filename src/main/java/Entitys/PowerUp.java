@@ -21,7 +21,7 @@ public class PowerUp {
         return entityBuilder(data)
                 .type(EntityTypes.POWER_UP)
                 .at(randomX, randomY)
-                .viewWithBBox(new Circle(8, Color.GREEN))
+                .viewWithBBox(new Circle(8, Color.RED))
                 .collidable()
                 .zIndex(10)
                 .build();

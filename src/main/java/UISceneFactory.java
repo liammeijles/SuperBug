@@ -9,4 +9,5 @@ public class UISceneFactory extends SceneFactory {
     public FXGLMenu newMainMenu(){
         return new StartMenu(MenuType.MAIN_MENU);
     }
+
 }
