@@ -31,6 +31,9 @@ public class PlayerComponent extends Component {
     private boolean enableShotGun = false;
     private int extraRandomBullet = 0;
 
+    Sound sound = new Sound();
+
+
     private final String PATH = "/assets/textures/";
 
     @Override
