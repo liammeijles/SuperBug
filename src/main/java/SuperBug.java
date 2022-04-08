@@ -28,6 +28,12 @@ public class SuperBug extends GameApplication {
 
     SpawnEnemyWave sew = new SpawnEnemyWave();
 
+    private static String playerName;
+
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+
     @Override
     protected void initSettings(GameSettings gameSettings) {
         gameSettings.setHeight(800);
@@ -59,6 +65,9 @@ public class SuperBug extends GameApplication {
 
         FXGL.getGameTimer().runAtInterval(() -> {spawn("powerup", 0,0);}, Duration.millis(15000));
 
+
+        System.out.println(playerName);
+
     }
 
     @Override
@@ -76,11 +85,13 @@ public class SuperBug extends GameApplication {
                     a.setVisible(false);
 
                     FXGL.getGameTimer().runOnceAfter(() -> {
+                        int savedScore = FXGL.geti("High score");
+                        saveHighScore(savedScore, playerName);
                         FXGL.getGameController().gotoMainMenu();
+
                     }, Duration.seconds(2));
 
-                    int savedScore = FXGL.geti("High score");
-                    saveHighScore(savedScore);
+                    // TODO: player dead
                 }
                 b.removeFromWorld();
             }
@@ -200,13 +211,13 @@ public class SuperBug extends GameApplication {
         });
     }
 
-    public void saveHighScore(int writeScore) {
+    public void saveHighScore(int writeScore, String writeName) {
         try {
             FileWriter myWriter = new FileWriter("src/main/java/scores.txt", true);
             BufferedWriter myBuffer = new BufferedWriter(myWriter);
             String wScore = Integer.toString(writeScore);
             System.out.println(wScore);
-            myBuffer.write(wScore);
+            myBuffer.write(writeName + ": " + wScore);
             myBuffer.newLine();
             myBuffer.close();
             System.out.println("New high score added");
