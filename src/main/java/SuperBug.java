@@ -25,6 +25,7 @@ public class SuperBug extends GameApplication {
 
     ArrayList<Texture> hearts = new ArrayList<>();
     private int preHealth;
+    private int currentLevel = 1;
 
     SpawnEnemyWave sew = new SpawnEnemyWave();
 
@@ -134,6 +135,17 @@ public class SuperBug extends GameApplication {
     protected void initUI() {
 
         FXGL.getGameScene().setBackgroundRepeat("Level1.png");
+
+        FXGL.getGameTimer().runAtInterval(() -> {
+            currentLevel += 1;
+            FXGL.inc("CurrentLevel", +1);
+            FXGL.getGameScene().setBackgroundRepeat("Level" + currentLevel + ".png");
+
+            if (currentLevel >= 4) {
+                currentLevel = 1;
+            }
+
+        }, Duration.seconds(60));
 
 
         Label score = new Label("High score");
